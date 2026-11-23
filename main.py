@@ -17,11 +17,19 @@ LINE = (
 
 
 def main() -> None:
+    if not LINE.strip():
+        raise ValueError("entry line must not be blank or only whitespace")
+    if not 1 <= len(LINE) <= 200:
+        raise ValueError(
+            f"entry line must be 1-200 characters, got {len(LINE)}"
+        )
     out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR") or "/output"
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, "entry.txt")
+    # Deterministic output: strip any accidental trailing whitespace and
+    # write exactly one line with no trailing newline, byte for byte.
     with open(path, "w", encoding="utf-8", newline="") as f:
-        f.write(LINE)
+        f.write(LINE.rstrip())
 
 
 if __name__ == "__main__":
